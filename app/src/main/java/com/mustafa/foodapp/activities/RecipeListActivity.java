@@ -88,7 +88,7 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeClickLis
     }
 
     private void initRecyclerView(){
-        mRecipesRvAdapter = new RecipesRvAdapter( this, this);
+        mRecipesRvAdapter = new RecipesRvAdapter( this);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
