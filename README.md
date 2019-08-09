@@ -3,15 +3,16 @@ Android application that allows the users to search for any sort of food and vie
 
 ##Used tools and technologies
 
-###Programming languages: 
+### Programming languages: 
     Java 1.8, XML.
-###Atchitucure: 
+### Architucure: 
     MVVM
-###Third party libraries
+### Third party libraries
     Retrofit2
     Data binding
     Circle Image view
     Glide
   
-
+[![FoodApp](https://user-images.githubusercontent.com/33812602/62813340-86f85700-bb0a-11e9-8433-f08fa0a2a214.gif)
+](url)
   
