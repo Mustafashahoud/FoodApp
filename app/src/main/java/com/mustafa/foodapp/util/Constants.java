@@ -1,11 +1,14 @@
-package com.mustafa.foodapp.util;
+package com.mustafa.foodApp.util;
 
 public class Constants {
-    public static final String BASE_URL = "https://www.food2fork.com";
-    public static final String API_KEY = "ef915f88aa2cdf50853476a98e4b97e6";
-    public static final int NETWORK_TIMEOUT = 5000;
 
-    public static final String[] DEFAULT_SEARCH_CATEGORIES_NAMES =
+    public static final String BASE_URL = "https://www.food2fork.com";
+
+    // YOU NEED YOUR OWN API KEY!!!!!!!!!!!!! https://www.food2fork.com/about/api
+    public static final String API_KEY = "dadc63b6325aaf398163b40fea9b5e79";
+
+
+    public static final String[] DEFAULT_SEARCH_CATEGORIES =
             {"Barbeque", "Breakfast", "Chicken", "Beef", "Brunch", "Dinner", "Wine", "Italian"};
 
     public static final String[] DEFAULT_SEARCH_CATEGORY_IMAGES =

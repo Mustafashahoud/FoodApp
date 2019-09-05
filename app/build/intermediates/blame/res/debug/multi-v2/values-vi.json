@@ -4,7 +4,7 @@
             "outputFile": "C:\\Users\\SAR\\Desktop\\AndroidChallenge\\FoodApp\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-vi\\values-vi.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\SAR\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-1.1.0-rc01.aar\\b8cbe983df577413f19bd7caf513e17b\\res\\values-vi\\values-vi.xml",
+                    "source": "C:\\Users\\SAR\\.gradle\\caches\\transforms-2\\files-2.1\\a8c03165c69018fbda4f77f1eb58f4bb\\appcompat-1.1.0-rc01\\res\\values-vi\\values-vi.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\SAR\\.gradle\\caches\\transforms-1\\files-1.1\\core-1.2.0-alpha01.aar\\b385bd07604e78a4f1439677dcf35db1\\res\\values-vi\\values-vi.xml",
+                    "source": "C:\\Users\\SAR\\.gradle\\caches\\transforms-2\\files-2.1\\d23ca375c576c4f77f42c729153a7f8a\\core-1.1.0-rc02\\res\\values-vi\\values-vi.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

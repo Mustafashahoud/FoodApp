@@ -1,10 +1,12 @@
-package com.mustafa.foodapp.requests.responses;
+package com.mustafa.foodApp.requests.responses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.mustafa.foodapp.models.Recipe;
+import com.mustafa.foodApp.models.Recipe;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public class RecipeSearchResponse {
 
@@ -20,13 +22,14 @@ public class RecipeSearchResponse {
         return count;
     }
 
+    @Nullable
     public List<Recipe> getRecipes() {
         return recipes;
     }
 
     @Override
     public String toString() {
-        return "recipeSearchResponse{" +
+        return "RecipeSearchResponse{" +
                 "count=" + count +
                 ", recipes=" + recipes +
                 '}';

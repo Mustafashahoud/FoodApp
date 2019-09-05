@@ -1,20 +1,29 @@
-package com.mustafa.foodapp.requests;
+package com.mustafa.foodApp.requests;
 
-import com.mustafa.foodapp.requests.responses.RecipeResponse;
-import com.mustafa.foodapp.requests.responses.RecipeSearchResponse;
+
+import com.mustafa.foodApp.requests.responses.ApiResponse;
+import com.mustafa.foodApp.requests.responses.RecipeResponse;
+import com.mustafa.foodApp.requests.responses.RecipeSearchResponse;
+
+import androidx.lifecycle.LiveData;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface RecipeApi {
 
-    @GET("/api/search")
-    Call<RecipeSearchResponse> searchRecipe(@Query("key") String key,
-                                            @Query("q") String query,
-                                            @Query("page") String page );
+    // SEARCH
+    @GET("api/search")
+    LiveData<ApiResponse<RecipeSearchResponse>> searchRecipe(
+            @Query("key") String key,
+            @Query("q") String query,
+            @Query("page") String page
+    );
 
-    @GET("/api/get")
-    Call<RecipeResponse> getRecipe(@Query("key") String key,
-                                   @Query("rId") String recipe_id);
-
+    // GET RECIPE REQUEST
+    @GET("api/get")
+    LiveData<ApiResponse<RecipeResponse>> getRecipe(
+            @Query("key") String key,
+            @Query("rId") String recipe_id
+    );
 }

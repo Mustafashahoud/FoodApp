@@ -1,147 +1,98 @@
-package com.mustafa.foodapp.repositories;
+package com.mustafa.foodApp.repositories;
 
-import com.mustafa.foodapp.models.Recipe;
-import com.mustafa.foodapp.requests.RecipeApiClient;
+import android.content.Context;
+import android.util.Log;
 
-import java.util.ArrayList;
+import com.mustafa.foodApp.AppExecutors;
+import com.mustafa.foodApp.models.Recipe;
+import com.mustafa.foodApp.persistance.RecipeDatabase;
+import com.mustafa.foodApp.persistance.RecipeDoa;
+import com.mustafa.foodApp.requests.ServiceGenerator;
+import com.mustafa.foodApp.requests.responses.ApiResponse;
+import com.mustafa.foodApp.requests.responses.RecipeSearchResponse;
+import com.mustafa.foodApp.util.Constants;
+import com.mustafa.foodApp.util.NetworkBoundResource;
+import com.mustafa.foodApp.util.Resource;
+
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
+
 
 public class RecipeRepository {
 
+    private static final String TAG = "RecipeRepository";
+
     private static RecipeRepository instance;
-    private RecipeApiClient recipeApiClient;
-    private String mQuery;
-    private int mPageNumber;
-    private int recipeCountExhausted = 0;
-    private int count = 0;
-    private int oldListCount;
+    private RecipeDoa recipeDoa;
 
-    //When there is no more search results for our query
-    private MutableLiveData<Boolean> mIsQueryExhausted = new MutableLiveData<>();
-
-    /* TO do so we need something called mediator liveData */
-    /*It is used when you want to make a change to a set of liveData before it is returned */
-    private MediatorLiveData<List<Recipe>> mMediatorRecipes = new MediatorLiveData<>();
-
-    public static RecipeRepository getInstance(){
-        if (instance == null){
-            instance = new RecipeRepository();
+    public static RecipeRepository getInstance(final Context context) {
+        if (instance == null) {
+            instance = new RecipeRepository(context);
         }
+
         return instance;
     }
 
-    /**
-     * Constructor.
-     * Instantiates a new Recipe repository.
-     */
-    public RecipeRepository(){
-        recipeApiClient = RecipeApiClient.getInstance();
-        initMediator();
+    private RecipeRepository(Context context) {
+        recipeDoa = RecipeDatabase.getInstance(context).getRecipeDoa();
     }
 
-    /**
-     * Get recipes live data.
-     *
-     * @return the live data
-     */
-    public LiveData<List<Recipe>>  getRecipes(){
-//        return recipeApiClient.getRecipes();
-        /*Cus wanna make a change to it before it is returned from the client*/
-        return mMediatorRecipes;
-    }
-
-    private void initMediator (){
-        LiveData<List<Recipe>> recipeListApiSource = recipeApiClient.getRecipes();
-        /*Think about like Mediator is in between section and the source is how that in between section is getting data from*/
-        mMediatorRecipes.addSource(recipeListApiSource, new Observer<List<Recipe>>() {
+    public LiveData<Resource<List<Recipe>>> searchRecipesApi(final String query, final int pageNumber) {
+        return new NetworkBoundResource<List<Recipe>, RecipeSearchResponse>(AppExecutors.getInstance()) {
             @Override
-            public void onChanged(List<Recipe> recipes) {
-                // it will be triggered when the source changes that means when the a request is made
-                // So know we have an opportunity to do something before the data is sent back to the activity
-                if (recipes != null){
-                    mMediatorRecipes.setValue(recipes);
-                    doneQuery(recipes);
+            protected void saveCallResult(@NonNull RecipeSearchResponse item) {
 
-                } else {
-                    // Here the importance of cache database comes
-                    // I need to search database cache
-                    doneQuery(null);
+                if (item.getRecipes() != null) { // Recipe list will be null if the api key is expired
+                    Recipe[] recipes = new Recipe[item.getRecipes().size()];
+                    int index= 0;
+
+                    for (long rowId: recipeDoa.insertRecipes((Recipe[]) (item.getRecipes().toArray(recipes)))){
+                        if (rowId == -1) {
+                            Log.d(TAG, "saveCallResult: CONFLICT... This photo is already in the cache");
+                            //if the recipe already exists ... I don't want to set the ingredients or timestamp
+                            // They will be erased
+                            recipeDoa.updateRecipe(
+                                    recipes[index].getRecipe_id(),
+                                    recipes[index].getTitle(),
+                                    recipes[index].getPublisher(),
+                                    recipes[index].getImage_url(),
+                                    recipes[index].getSocial_rank()
+                            );
+                        }
+
+                        index++;
+
+                    }
+
+
                 }
-            }
-        });
-    }
 
-    private void doneQuery (List<Recipe> list){
-
-        if (list != null){
-            if (list.size() % 30 != 0 ){ // that means the query is exhausted that means there is no more search results for that query
-                mIsQueryExhausted.setValue(true);
-                return;
             }
 
-        } else {
-            mIsQueryExhausted.setValue(true);
-            return;
-        }
+            @Override
+            protected boolean shouldFetch(@Nullable List<Recipe> data) {
+                return true;
+            }
 
-        if (!(oldListCount == list.size())){
-            oldListCount = list.size();
-        } else {
-            mIsQueryExhausted.setValue(true);
-            oldListCount = 0;
-            return;
-        }
+            @NonNull
+            @Override
+            protected LiveData<List<Recipe>> loadFromDb() {
+                return recipeDoa.searchRecipes(query, pageNumber);
+            }
 
-
-    }
-
-    public LiveData<Boolean> isQueryExhausted(){
-        return mIsQueryExhausted;
-    }
-
-    /**
-     *
-     * @return LiveData Recipe with a certain recipeId
-     */
-    public LiveData<Recipe> getRecipe(){
-        return recipeApiClient.getRecipe();
-    }
-
-    /**
-     * Method to get Recipes querying the recipes by calling Call<RecipeSearchResponse> getRecipe(ApiKey, query, pageNumber)
-     * This method will be used in the {@link com.mustafa.foodapp.viewmodels.RecipeListViewModel }
-     * @param query      the query that is the searched recipe
-     * @param pageNumber the page number
-     */
-    public void searchRecipesApi(String query, int pageNumber){
-        mQuery = query;
-        mPageNumber = pageNumber;
-        mIsQueryExhausted.setValue(false);
-        recipeApiClient.searchRecipeApi(query, pageNumber);
-    }
-
-    public void searchNextPage(){
-        searchRecipesApi(mQuery, mPageNumber + 1);
-    }
-
-    public void cancelRequest(){
-        recipeApiClient.cancelRequest();
-    }
-
-    /**
-     * Query to get a recipe with a certain recipe id.
-     * @param recipeId the recipe id
-     */
-    public void getRecipeById(String recipeId){
-        recipeApiClient.getRecipeById(recipeId);
-    }
-
-    // For Recipe timeout
-    public MutableLiveData<Boolean> isRecipeRequestTimedOut() {
-        return recipeApiClient.isRecipeRequestTimedOut();
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<RecipeSearchResponse>> createCall() {
+                return ServiceGenerator
+                        .getRecipeApi()
+                        .searchRecipe(
+                                Constants.API_KEY,
+                                query,
+                                String.valueOf(pageNumber));
+            }
+        }.getAsLiveData();
     }
 }

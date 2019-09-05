@@ -1,47 +1,41 @@
-package com.mustafa.foodapp.viewmodels;
+package com.mustafa.foodApp.viewmodels;
 
-import com.mustafa.foodapp.models.Recipe;
-import com.mustafa.foodapp.repositories.RecipeRepository;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import android.app.Application;
 
-public class RecipeViewModel extends ViewModel {
-    private RecipeRepository recipeRepository;
-    private String mRecipeId;
-    private boolean mDidRetrieveRecipe;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 
-    public RecipeViewModel() {
-        this.recipeRepository = RecipeRepository.getInstance();
-        mDidRetrieveRecipe = false;
-    }
 
-    public LiveData<Recipe> getRecipe(){
-        return recipeRepository.getRecipe();
-    }
+public class RecipeViewModel extends AndroidViewModel {
 
-    public void getRecipeById (String recipeId){
-        mRecipeId = recipeId;
-        recipeRepository.getRecipeById(recipeId);
-    }
 
-    public String getRecipeId(){
-        return mRecipeId;
+    public RecipeViewModel(@NonNull Application application) {
+        super(application);
+
     }
 
 
-    // For Recipe timeout
-    public MutableLiveData<Boolean> isRecipeRequestTimedOut() {
-        return recipeRepository.isRecipeRequestTimedOut();
-    }
 
-
-    public boolean isDidRetrieveRecipe() {
-        return mDidRetrieveRecipe;
-    }
-
-    public void setDidRetrieveRecipe(boolean mDidRetrieveRecipe) {
-        this.mDidRetrieveRecipe = mDidRetrieveRecipe;
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,8 +1,3 @@
 <resources>
-    <string name="app_name">FoodApp</string>
-
-    <string name="api_key">ef915f88aa2cdf50853476a98e4b97e6</string>
-
-    <string name="search">Search Recipes</string>
-    <string name="loading_tag">LOADING...</string>
+    <string name="app_name">FoodRecipes</string>
 </resources>

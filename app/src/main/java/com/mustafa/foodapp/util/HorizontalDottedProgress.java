@@ -1,7 +1,8 @@
-package com.mustafa.foodapp.util;
+package com.mustafa.foodApp.util;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -9,9 +10,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
-
-import com.mustafa.foodapp.R;
-
 
 public class HorizontalDottedProgress extends View {
 
@@ -25,7 +23,7 @@ public class HorizontalDottedProgress extends View {
     private int  mDotPosition;
 
     //specify how many dots you need in a progressbar
-    private int mDotAmount = 50;
+    private int mDotAmount = 10;
 
     public HorizontalDottedProgress(Context context) {
         super(context);
@@ -47,7 +45,7 @@ public class HorizontalDottedProgress extends View {
         Paint paint = new Paint();
 
         //set the color for the dot that you want to draw
-        paint.setColor(getResources().getColor(R.color.colorAccent));
+        paint.setColor(Color.parseColor("#fd583f"));
 
         //function to create dot
         createDot(canvas,paint);

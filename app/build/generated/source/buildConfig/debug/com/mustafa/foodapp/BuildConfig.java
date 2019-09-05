@@ -1,7 +1,7 @@
 /**
  * Automatically generated file. DO NOT MODIFY
  */
-package com.mustafa.foodapp;
+package com.mustafa.foodApp;
 
 public final class BuildConfig {
   public static final boolean DEBUG = Boolean.parseBoolean("true");

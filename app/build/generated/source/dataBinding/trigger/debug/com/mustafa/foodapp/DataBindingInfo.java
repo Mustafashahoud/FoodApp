@@ -1,4 +1,4 @@
-package com.mustafa.foodapp;
+package com.mustafa.foodApp;
 
 import androidx.databinding.BindingBuildInfo;
 
