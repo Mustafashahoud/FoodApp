@@ -1,4 +1,4 @@
-package com.mustafa.foodApp;
+package com.mustafa.foodApp.ui;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +7,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.mustafa.foodApp.BaseActivity;
+import com.mustafa.foodApp.R;
 import com.mustafa.foodApp.models.Recipe;
 import com.mustafa.foodApp.viewmodels.RecipeViewModel;
 

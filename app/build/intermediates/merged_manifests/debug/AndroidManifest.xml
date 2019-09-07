@@ -19,16 +19,15 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:testOnly="true"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.mustafa.foodApp.RecipeListActivity" >
+        <activity android:name="com.mustafa.foodApp.ui.RecipeListActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mustafa.foodApp.RecipeActivity" />
+        <activity android:name="com.mustafa.foodApp.ui.RecipeActivity" />
 
         <service
             android:name="androidx.room.MultiInstanceInvalidationService"

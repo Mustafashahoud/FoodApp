@@ -22,7 +22,7 @@ public class RecipeListViewModel extends AndroidViewModel {
 
     private static final String TAG = "RecipeListViewModel";
 
-    public enum ViewState {CATEGORIES, RECIPES};
+    public enum ViewState {CATEGORIES, RECIPES}
 
     private MutableLiveData<ViewState> viewState;
 
@@ -39,6 +39,8 @@ public class RecipeListViewModel extends AndroidViewModel {
     private boolean isPerformingQuery;
     private int pageNumber;
     private String query;
+    private boolean cancelRequest;
+    private long requestStartTime;
 
     public RecipeListViewModel(@NonNull Application application) {
         super(application);
@@ -55,7 +57,7 @@ public class RecipeListViewModel extends AndroidViewModel {
         }
     }
 
-    public LiveData<ViewState> getViewState () {
+    public LiveData<ViewState> getViewState() {
         return viewState;
     }
 
@@ -67,7 +69,11 @@ public class RecipeListViewModel extends AndroidViewModel {
         return pageNumber;
     }
 
-    public void searchRecipesApi (String query, int pageNumber) {
+    public void setViewCategories() {
+        viewState.setValue(ViewState.CATEGORIES);
+    }
+
+    public void searchRecipesApi(String query, int pageNumber) {
 
         if (!isPerformingQuery) {
             if (pageNumber == 0) {
@@ -82,7 +88,16 @@ public class RecipeListViewModel extends AndroidViewModel {
 
     }
 
-    private void executeSearch () {
+    public void searchNextPage() {
+        if (!isQueryExhausted && !isPerformingQuery) {
+            pageNumber++;
+            executeSearch();
+        }
+
+    }
+
+    private void executeSearch() {
+        cancelRequest = false;
         isPerformingQuery = true;
         viewState.setValue(ViewState.RECIPES);
         final LiveData<Resource<List<Recipe>>> repositorySource = recipeRepository.searchRecipesApi(query, pageNumber);
@@ -93,29 +108,46 @@ public class RecipeListViewModel extends AndroidViewModel {
                 // Before sending to the ui
                 // Or before to set the value to the liveData i can react
 
-                if (listResource != null) {
-                    recipes.setValue(listResource);
-                    if (listResource.status == Resource.Status.SUCCESS){
-                        isPerformingQuery = false;
-                        if (listResource.data != null) {
-                            if (listResource.data.size() == 0) {
-                                Log.d(TAG, "onChanged: Query is Exhausted");
-                                recipes.setValue(new Resource<List<Recipe>>(Resource.Status.ERROR, listResource.data, QUERY_EXHAUSTED_MSG));
+                if (!cancelRequest) {
+                    if (listResource != null) {
+                        recipes.setValue(listResource);
+                        if (listResource.status == Resource.Status.SUCCESS) {
+                            isPerformingQuery = false;
+                            if (listResource.data != null) {
+                                if (listResource.data.size() == 0) {
+                                    Log.d(TAG, "onChanged: Query is Exhausted...");
+                                    recipes.setValue(new Resource<List<Recipe>>(
+                                            Resource.Status.ERROR,
+                                            listResource.data,
+                                            QUERY_EXHAUSTED_MSG)
+                                    );
+                                }
                             }
+                            recipes.removeSource(repositorySource);
+                        } else if (listResource.status == Resource.Status.ERROR) {
+                            isPerformingQuery = false;
+                            recipes.removeSource(repositorySource);
                         }
-                        recipes.removeSource(repositorySource);
-                    } else if (listResource.status == Resource.Status.ERROR){
-                        isPerformingQuery = false;
+
+                    } else {
                         recipes.removeSource(repositorySource);
                     }
-
-                }else {
+                } else {
                     recipes.removeSource(repositorySource);
                 }
+
+
             }
         });
     }
 
+    public void cancelSearchRequest() {
+        if (isPerformingQuery){
+            cancelRequest = true;
+            isPerformingQuery = false;
+            pageNumber = 1;
+        }
+    }
 
 }
 

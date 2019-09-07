@@ -61,6 +61,9 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
+    // Okhttp
+    implementation "com.squareup.okhttp3:okhttp:4.1.1"
+
     //Lifecycle-aware components for MVVM jetpack architecture
 
     // ViewModel and LiveData
