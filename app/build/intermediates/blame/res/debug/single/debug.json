@@ -628,6 +628,10 @@
         "source": "C:\\Users\\SAR\\.gradle\\caches\\transforms-2\\files-2.1\\5488c81610655eccbe4589ddb707dc5f\\material-1.1.0-alpha09\\res\\drawable-xxxhdpi-v4\\design_ic_visibility_off.png"
     },
     {
+        "merged": "C:\\Users\\SAR\\Desktop\\AndroidChallenge\\FoodApp\\app\\build\\intermediates\\res\\merged\\debug\\drawable_white_background.png.flat",
+        "source": "C:\\Users\\SAR\\Desktop\\AndroidChallenge\\FoodApp\\app\\src\\main\\res\\drawable\\white_background.png"
+    },
+    {
         "merged": "C:\\Users\\SAR\\Desktop\\AndroidChallenge\\FoodApp\\app\\build\\intermediates\\res\\merged\\debug\\anim_btn_checkbox_to_unchecked_check_path_merged_animation.xml.flat",
         "source": "C:\\Users\\SAR\\.gradle\\caches\\transforms-2\\files-2.1\\a8c03165c69018fbda4f77f1eb58f4bb\\appcompat-1.1.0-rc01\\res\\anim\\btn_checkbox_to_unchecked_check_path_merged_animation.xml"
     },
