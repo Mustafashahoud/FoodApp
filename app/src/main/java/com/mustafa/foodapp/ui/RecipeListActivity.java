@@ -7,7 +7,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import com.mustafa.foodApp.BaseActivity;
 import com.mustafa.foodApp.R;
 import com.mustafa.foodApp.adapters.OnRecipeListener;
@@ -136,10 +138,18 @@ public class RecipeListActivity extends BaseActivity implements OnRecipeListener
     }
 
     private void initRecyclerView() {
-        mAdapter = new RecipeRecyclerAdapter(this, initGlide());
+        ViewPreloadSizeProvider<String> preloadSizeProvider = new ViewPreloadSizeProvider<>();
+        mAdapter = new RecipeRecyclerAdapter(this, initGlide(), preloadSizeProvider);
         VerticalSpacingItemDecorator itemDecorator = new VerticalSpacingItemDecorator(30);
         mRecyclerView.addItemDecoration(itemDecorator);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        RecyclerViewPreloader<String> preLoader = new RecyclerViewPreloader<String>(
+                Glide.with(this),
+                mAdapter, preloadSizeProvider,
+                30);
+
+        mRecyclerView.addOnScrollListener(preLoader);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

@@ -30,6 +30,6 @@ public interface RecipeDoa {
     LiveData<List<Recipe>> searchRecipes(String query, int pageNumber);
 
     @Query("SELECT * FROM recipes WHERE recipe_id = :recipe_id")
-    LiveData<List<Recipe>> getRecipe(String recipe_id);
+    LiveData<Recipe> getRecipe(String recipe_id);
 
 }

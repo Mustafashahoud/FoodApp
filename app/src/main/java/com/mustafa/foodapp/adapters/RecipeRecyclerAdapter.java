@@ -1,24 +1,30 @@
 package com.mustafa.foodApp.adapters;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.ListPreloader;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import com.mustafa.foodApp.R;
 import com.mustafa.foodApp.models.Recipe;
 import com.mustafa.foodApp.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ListPreloader.PreloadModelProvider {
 
     private static final int RECIPE_TYPE = 1;
     private static final int LOADING_TYPE = 2;
@@ -28,10 +34,15 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private List<Recipe> mRecipes;
     private OnRecipeListener mOnRecipeListener;
     private RequestManager requestManager;
+    private ViewPreloadSizeProvider<String> preloadSizeProvider;
 
-    public RecipeRecyclerAdapter(OnRecipeListener mOnRecipeListener, RequestManager requestManager) {
+
+    public RecipeRecyclerAdapter(OnRecipeListener mOnRecipeListener,
+                                 RequestManager requestManager,
+                                 ViewPreloadSizeProvider<String> preloadSizeProvider) {
         this.mOnRecipeListener = mOnRecipeListener;
         this.requestManager= requestManager; // glide instance that has some properties.
+        this.preloadSizeProvider = preloadSizeProvider;
     }
 
     @NonNull
@@ -43,7 +54,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             case RECIPE_TYPE:{
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_recipe_list_item, viewGroup, false);
-                return new RecipeViewHolder(view, mOnRecipeListener, requestManager);
+                return new RecipeViewHolder(view, mOnRecipeListener, requestManager, preloadSizeProvider);
             }
 
             case LOADING_TYPE:{
@@ -63,7 +74,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             default:{
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_recipe_list_item, viewGroup, false);
-                return new RecipeViewHolder(view, mOnRecipeListener, requestManager);
+                return new RecipeViewHolder(view, mOnRecipeListener, requestManager, preloadSizeProvider);
             }
         }
 
@@ -199,6 +210,21 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return null;
     }
 
+    @NonNull
+    @Override
+    public List getPreloadItems(int position) {
+        String url = mRecipes.get(position).getImage_url();
+        if (TextUtils.isEmpty(url)){
+            return Collections.emptyList();
+        }
+        return Collections.singletonList(url);
+    }
+
+    @Nullable
+    @Override
+    public RequestBuilder<?> getPreloadRequestBuilder(@NonNull Object item) {
+        return requestManager.load(item);
+    }
 }
 
 
